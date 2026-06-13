@@ -12,9 +12,15 @@ export async function GET(request) {
 
     if (!error) {
       return NextResponse.redirect(new URL(next, request.url));
+    } else {
+      return NextResponse.redirect(
+        new URL(`/error?error_description=${encodeURIComponent(error.message)}`, request.url)
+      );
     }
   }
 
   // Return the user to an error page with instructions
-  return NextResponse.redirect(new URL("/error", request.url));
+  return NextResponse.redirect(
+    new URL("/error?error_description=No+authorization+code+provided", request.url)
+  );
 }
