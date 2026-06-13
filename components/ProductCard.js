@@ -113,24 +113,26 @@ export default function ProductCard({ product }) {
 
           <CardContent className="pb-4">
             <div className="flex flex-wrap gap-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowChart(!showChart)}
-                className="h-8 text-xs gap-1 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-850"
-              >
-                {showChart ? (
-                  <>
-                    <ChevronUp className="w-3.5 h-3.5 text-orange-500" />
-                    Hide History
-                  </>
-                ) : (
-                  <>
-                    <ChevronDown className="w-3.5 h-3.5" />
-                    Price History
-                  </>
-                )}
-              </Button>
+              {product.price_history && product.price_history.length >= 2 && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowChart(!showChart)}
+                  className="h-8 text-xs gap-1 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-350 hover:bg-slate-50 dark:hover:bg-slate-850"
+                >
+                  {showChart ? (
+                    <>
+                      <ChevronUp className="w-3.5 h-3.5 text-orange-500" />
+                      Hide History
+                    </>
+                  ) : (
+                    <>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                      Price History
+                    </>
+                  )}
+                </Button>
+              )}
 
               <Button
                 variant="outline"

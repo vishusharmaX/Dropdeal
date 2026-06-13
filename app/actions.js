@@ -66,9 +66,19 @@ export async function addProduct(formData) {
 
     if (error) throw error;
 
-    // Add to price history if it's a new product OR price changed
+    // Check if there is existing history for this product
+    let hasHistory = false;
+    if (isUpdate) {
+      const { count } = await supabase
+        .from("price_history")
+        .select("*", { count: "exact", head: true })
+        .eq("product_id", existingProduct.id);
+      hasHistory = (count || 0) > 0;
+    }
+
+    // Add to price history if it's a new product OR has no history OR price changed
     const shouldAddHistory =
-      !isUpdate || existingProduct.current_price !== newPrice;
+      !isUpdate || !hasHistory || existingProduct.current_price !== newPrice;
 
     if (shouldAddHistory) {
       const { error: historyError } = await supabase.from("price_history").insert({
@@ -117,7 +127,10 @@ export async function getProducts() {
     const supabase = await createClient();
     const { data, error } = await supabase
       .from("products")
-      .select("*")
+      .select(`
+        *,
+        price_history:price_history(id)
+      `)
       .order("created_at", { ascending: false });
 
     if (error) throw error;
